@@ -5,3 +5,4 @@ streamlit
 pandasai
 pyyaml
 google-generativeai
+openpyxl

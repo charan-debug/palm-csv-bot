@@ -2,6 +2,7 @@ import streamlit as st
 from pandasai import SmartDataframe
 from pandasai.llm import GooglePalm
 import pandas as pd
+import io
 
 # Define the Streamlit app
 def main():
@@ -22,12 +23,24 @@ def main():
             return df
         
         # Create file uploader component
-        uploaded_file = st.file_uploader("Upload CSV file", type=['csv'])
+        uploaded_file = st.file_uploader("Upload file", type=['csv', 'xlsx'])
         
         # Check if file is uploaded
         if uploaded_file is not None:
-            # Load data into a DataFrame
-            df = pd.read_csv(uploaded_file)
+            # Check file type
+            if uploaded_file.type == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': # XLSX file
+                # Read XLSX file as DataFrame
+                xls = pd.ExcelFile(uploaded_file)
+                df = pd.read_excel(xls)
+                # Convert DataFrame to CSV format
+                csv_file = io.StringIO()
+                df.to_csv(csv_file, index=False)
+                # Load CSV data into a DataFrame
+                csv_file.seek(0)
+                df = pd.read_csv(csv_file)
+            else: # CSV file
+                # Load data into a DataFrame
+                df = pd.read_csv(uploaded_file)
             
             # Initialize SmartDataframe with the uploaded data
             smart_df = load_smart_dataframe(df)

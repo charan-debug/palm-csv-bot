@@ -6,7 +6,7 @@ import io
 
 # Define the Streamlit app
 def main():
-    st.title("Smart Dataframe Chat")
+    st.title("AI Chatbot")
     
     # Create input field for Google API key
     google_api_key = st.text_input("Enter your Google API key:")

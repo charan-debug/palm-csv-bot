@@ -45,13 +45,23 @@ def main():
             # Initialize SmartDataframe with the uploaded data
             smart_df = load_smart_dataframe(df)
             
-            # Create an input text box for user query
-            user_query = st.text_input("Enter your question:")
+            # Define predefined questions
+            predefined_questions = ["How many rows are there in the dataset?", "Explain the dataset in detail.","What are the columns present in the dataset?"]
+            selected_question = st.selectbox("Select a question", ["Select a question"] + predefined_questions) 
+            custom_question = st.text_input("Or ask a custom question")
             
-            # Check if the user has entered a query
-            if user_query:
+            # Check if the user has asked a question
+            if st.button("Ask"):
+                if selected_question != "Select a question":
+                    query = selected_question
+                elif custom_question.strip() != "":
+                    query = custom_question.strip()
+                else:
+                    st.warning("Please select a predefined question or ask a custom question.")
+                    return
+
                 # Use the SmartDataframe to get the response
-                response = smart_df.chat(user_query)
+                response = smart_df.chat(query)
                 
                 # Display the response
                 st.write("Response:")
